@@ -7,7 +7,7 @@ Seven phases take the project from zero to a production-ready, Vercel-deployed, 
 ## Phases
 
 - [x] **Phase 1: Foundation** — Bootstrap Next.js frontend and standalone Socket.IO server with shared TypeScript types and local dev setup
-- [ ] **Phase 2: Game Engine** — Server-side room management, card shuffling, flip validation, turn logic, scoring, and game-end detection
+- [x] **Phase 2: Game Engine** — Server-side room management, card shuffling, flip validation, turn logic, scoring, and game-end detection
 - [ ] **Phase 3: Game UI & Sync** — Game board, card flip animations, real-time synchronization of state, scoreboard, and winner modal
 - [ ] **Phase 4: Lobby Flow** — Landing page, Create Room, Join Room, Waiting Room, room code copy/share, and Leave Room dialog
 - [ ] **Phase 5: Edge Cases** — Disconnect detection, reconnection grace window, auto-win, spectator mode, and rematch
@@ -161,7 +161,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-07-05 |
-| 2. Game Engine | 0/3 | Planned | 2026-07-05 |
+| 2. Game Engine | 3/3 | Complete | 2026-07-05 |
 | 3. Game UI & Sync | 0/3 | Not started | - |
 | 4. Lobby Flow | 0/3 | Not started | - |
 | 5. Edge Cases | 0/3 | Not started | - |

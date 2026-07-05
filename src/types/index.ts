@@ -22,6 +22,8 @@ export interface Room {
   currentTurn: string | null;
   flippedCards: number[];
   createdAt: number;
+  rematchVotes?: string[];
+  elapsedTime?: number;
 }
 
 export interface GameState {
