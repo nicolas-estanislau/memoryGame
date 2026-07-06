@@ -150,9 +150,9 @@ Plans:
   5. `README.md` covers installation, dev setup, env vars, deployment, architecture overview, game rules, folder structure, and future improvements.
 
 Plans:
-- [ ] 07-01: Configure Vercel deployment (vercel.json, env vars) and Railway/Render deployment (Dockerfile or start script, env vars)
-- [ ] 07-02: Implement keyboard navigation, visible focus rings, ARIA labels, and reduced motion support across all components
-- [ ] 07-03: Add error boundaries to the game page and write complete README.md
+- [x] 07-01: Configure Vercel deployment (vercel.json, env vars) and Railway/Render deployment (Dockerfile or start script, env vars)
+- [x] 07-02: Implement keyboard navigation, visible focus rings, ARIA labels, and reduced motion support across all components
+- [x] 07-03: Add error boundaries to the game page and write complete README.md
 
 ---
 
@@ -166,4 +166,4 @@ Plans:
 | 4. Lobby Flow | 3/3 | Complete | 2026-07-05 |
 | 5. Edge Cases | 3/3 | Complete | 2026-07-05 |
 | 6. Polish | 4/4 | Complete | 2026-07-05 |
-| 7. Deployment & Docs | 0/3 | Not started | - |
+| 7. Deployment & Docs | 3/3 | Complete | 2026-07-05 |

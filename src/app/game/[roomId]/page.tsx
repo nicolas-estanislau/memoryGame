@@ -14,6 +14,7 @@ import { WaitingRoom } from "@/components/WaitingRoom";
 import { ReconnectBanner } from "@/components/ReconnectBanner";
 import { ReactionBar } from "@/components/ReactionBar";
 import { ReactionOverlay } from "@/components/ReactionOverlay";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Navbar } from "@/components/Navbar";
 
 export default function GamePage() {
@@ -73,6 +74,7 @@ export default function GamePage() {
   }, [joined, name, roomId]);
 
   const handleCardClick = (cardId: number) => {
+    console.log("aqui")
     if (isSpectator) return;
     play("flip");
     emitFlipCard(cardId);
@@ -84,23 +86,25 @@ export default function GamePage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex flex-col items-center py-8 gap-6">
-        <ReconnectBanner />
-        {status === "waiting" ? (
-          <WaitingRoom roomCode={roomId} />
-        ) : (
-          <>
-            <Scoreboard />
-            <GameBoard
-              cards={board}
-              isLocked={effectiveLock}
-              isLoading={isLoading}
-              onCardClick={handleCardClick}
-            />
-            <ReactionBar />
-            <WinnerModal />
-          </>
-        )}
-        <ReactionOverlay />
+        <ErrorBoundary>
+          <ReconnectBanner />
+          {status === "waiting" ? (
+            <WaitingRoom roomCode={roomId} />
+          ) : (
+            <>
+              <Scoreboard />
+              <GameBoard
+                cards={board}
+                isLocked={effectiveLock}
+                isLoading={isLoading}
+                onCardClick={handleCardClick}
+              />
+              <ReactionBar />
+              <WinnerModal />
+            </>
+          )}
+          <ReactionOverlay />
+        </ErrorBoundary>
       </main>
     </div>
   );

@@ -1,10 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 
 export function ReactionOverlay() {
   const activeReactions = useGameStore((s) => s.activeReactions);
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">

@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Provide a seamless, server-authoritative, real-time multiplayer memory game experience with rich visuals, synchronized game state, and zero client-side cheating.
-**Current focus:** Phase 6 — Polish
+**Current focus:** Phase 7 — Deployment & A11y
 
 ## Current Position
 
-Phase: 6 of 7 (Polish)
-Plan: 4 of 4 executed
+Phase: 7 of 7 (Deployment & A11y)
+Plan: 3 of 3 executed
 Status: Verification
-Last activity: 2026-07-05 — Phase 6: all 4 plans executed, type-check + build pass.
+Last activity: 2026-07-05 — Phase 7: all 3 plans executed, type-check + build pass.
 
-Progress: [██████████] 30% (Phases 1-5: complete, Phase 6: complete)
+Progress: [██████████] 100% — All 7 phases complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 22
 - Average duration: ~15 min
 - Total execution time: ~90 min
 
@@ -33,10 +33,11 @@ Progress: [██████████] 30% (Phases 1-5: complete, Phase 6: c
 | 4     | 3     | 3     | 15 min   |
 | 5     | 3     | 3     | 15 min   |
 | 6     | 4     | 4     | 15 min   |
+| 7     | 3     | 3     | 15 min   |
 
 **Recent Trend:**
-- Last 5 plans: 06-04 (page transitions) ✓, 06-03 (emoji reactions) ✓, 06-02 (audio system) ✓
-- Trend: Phase 6 executed — theme switcher, audio effects, emoji reactions, page transitions
+- Last 5 plans: 07-03 (error boundary + README) ✓, 07-02 (reduced motion + ARIA) ✓, 07-01 (deployment config) ✓
+- Trend: Phase 7 executed — deployment configs, reduced motion support, error boundary, README
 
 *Updated after each plan completion*
 
@@ -71,6 +72,10 @@ Progress: [██████████] 30% (Phases 1-5: complete, Phase 6: c
 - Phase 6: Mute state persisted in localStorage, Navbar toggle with volume/mute SVG icons
 - Phase 6: Emoji reactions broadcast via server `sendReaction`/`roomReaction` events; floating Framer Motion animation overlay
 - Phase 6: Page transitions via `template.tsx` with fade + slide-up animation
+- Phase 7: Vercel auto-deploy (vercel.json), Railway Dockerfile for server
+- Phase 7: Reduced motion via framer-motion `useReducedMotion` hook on MemoryCard, template, ReactionOverlay
+- Phase 7: Error boundary wraps game page content with retry button
+- Phase 7: Comprehensive README with architecture, rules, env vars, deployment guide
 
 ### Pending Todos
 
@@ -89,7 +94,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-07-05
-Stopped at: Phase 6 fully executed — theme switcher, audio effects, emoji reactions, page transitions, all type-checked and built
+Stopped at: **ALL 7 PHASES COMPLETE** — Full multiplayer memory card game with real-time sync, lobby, edge cases, polish, and deployment config
 Resume file: None
 
 ## Files Modified (Phase 2)
@@ -146,3 +151,16 @@ Resume file: None
 - `src/components/ReactionBar.tsx` — 6 preset emoji buttons (🎉🔥👏😂😮❤️)
 - `src/components/ReactionOverlay.tsx` — Fixed overlay with AnimatePresence floating emoji animations
 - `src/app/template.tsx` — Framer Motion fade + slide-up page transition wrapper
+
+## Files Modified (Phase 7)
+
+- `vercel.json` — Vercel deployment config for Next.js
+- `server/Dockerfile` — Node 20 Alpine Dockerfile for Railway/Render
+- `.env.example` — Full env var documentation with dev/prod examples
+- `src/components/MemoryCard.tsx` — useReducedMotion skips flip animation
+- `src/app/template.tsx` — useReducedMotion skips page transition
+- `src/components/ReactionOverlay.tsx` — Returns null when reduced motion preferred
+- `src/components/ReconnectBanner.tsx` — Added role="status" + aria-live="polite"
+- `src/components/ErrorBoundary.tsx` — Class component with error state + retry button
+- `src/app/game/[roomId]/page.tsx` — Wrapped content in ErrorBoundary
+- `README.md` — Complete project documentation

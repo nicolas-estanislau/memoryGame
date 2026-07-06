@@ -16,6 +16,8 @@ export function ReconnectBanner() {
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={cn(
         "w-full max-w-[480px] mx-auto px-4 py-2 rounded-lg text-center text-sm",
         "bg-amber-50 border border-amber-200 text-amber-800",

@@ -70,6 +70,9 @@ export function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
         <Button variant="outline" size="sm" asChild>
+          <Link href="/solo">Play Solo</Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
           <Link href="/create">Create Room</Link>
         </Button>
         <Button size="sm" asChild>

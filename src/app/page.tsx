@@ -15,7 +15,13 @@ export default function Home() {
             and beat your opponent in this classic brain teaser.
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link
+            href="/solo"
+            className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-6 py-3 text-sm font-medium text-white shadow hover:bg-emerald-500 transition-colors"
+          >
+            Play Solo
+          </Link>
           <Link
             href="/create"
             className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
