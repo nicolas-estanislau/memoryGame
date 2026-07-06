@@ -130,10 +130,10 @@ Plans:
   5. Toast notifications appear for: room created, player joined, player disconnected, and match found.
 
 Plans:
-- [ ] 06-01: Build ThemeProvider with light/dark/system toggle, localStorage persistence, and smooth CSS transitions
-- [ ] 06-02: Implement audio system (flip/match/win sounds) with mute toggle, autoplay-policy compliance, and localStorage persistence
-- [ ] 06-03: Build emoji reactions feature with server broadcast and floating Framer Motion animations
-- [ ] 06-04: Add Framer Motion page transitions, modal transitions, score increment animations, and toast notification system
+- [x] 06-01: Build ThemeProvider with light/dark/system toggle, localStorage persistence, and smooth CSS transitions
+- [x] 06-02: Implement audio system (flip/match/win sounds) with mute toggle, autoplay-policy compliance, and localStorage persistence
+- [x] 06-03: Build emoji reactions feature with server broadcast and floating Framer Motion animations
+- [x] 06-04: Add Framer Motion page transitions, modal transitions, score increment animations, and toast notification system
 
 ---
 
@@ -165,5 +165,5 @@ Plans:
 | 3. Game UI & Sync | 3/3 | Complete | 2026-07-05 |
 | 4. Lobby Flow | 3/3 | Complete | 2026-07-05 |
 | 5. Edge Cases | 3/3 | Complete | 2026-07-05 |
-| 6. Polish | 0/4 | Not started | - |
+| 6. Polish | 4/4 | Complete | 2026-07-05 |
 | 7. Deployment & Docs | 0/3 | Not started | - |

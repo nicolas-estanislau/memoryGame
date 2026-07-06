@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** Provide a seamless, server-authoritative, real-time multiplayer memory game experience with rich visuals, synchronized game state, and zero client-side cheating.
-**Current focus:** Phase 5 — Edge Cases
+**Current focus:** Phase 6 — Polish
 
 ## Current Position
 
-Phase: 5 of 7 (Edge Cases)
-Plan: 3 of 3 executed
+Phase: 6 of 7 (Polish)
+Plan: 4 of 4 executed
 Status: Verification
-Last activity: 2026-07-05 — Phase 5: all 3 plans executed, type-check + build pass.
+Last activity: 2026-07-05 — Phase 6: all 4 plans executed, type-check + build pass.
 
-Progress: [██████████] 24% (Phases 1-4: complete, Phase 5: complete)
+Progress: [██████████] 30% (Phases 1-5: complete, Phase 6: complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 19
 - Average duration: ~15 min
 - Total execution time: ~90 min
 
@@ -32,10 +32,11 @@ Progress: [██████████] 24% (Phases 1-4: complete, Phase 5: c
 | 3     | 3     | 3     | 15 min   |
 | 4     | 3     | 3     | 15 min   |
 | 5     | 3     | 3     | 15 min   |
+| 6     | 4     | 4     | 15 min   |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (rematch votes + spectator UI) ✓, 05-02 (reconnect banner + spectator mode) ✓, 05-01 (server disconnect/reconnect) ✓
-- Trend: Phase 5 executed — disconnect grace period, reconnect, spectator mode, enhanced rematch
+- Last 5 plans: 06-04 (page transitions) ✓, 06-03 (emoji reactions) ✓, 06-02 (audio system) ✓
+- Trend: Phase 6 executed — theme switcher, audio effects, emoji reactions, page transitions
 
 *Updated after each plan completion*
 
@@ -65,6 +66,11 @@ Progress: [██████████] 24% (Phases 1-4: complete, Phase 5: c
 - Phase 5: Reconnect via `reconnectToGame` event — server returns full game state
 - Phase 5: Spectator mode — 3rd+ joiners see read-only board with full state snapshot
 - Phase 5: Rematch votes tracked client-side in store; WinnerModal shows vote progress
+- Phase 6: next-themes for light/dark/system theme with `.dark` class + localStorage
+- Phase 6: Web Audio API oscillator tones for flip/match/win sounds (no audio files needed)
+- Phase 6: Mute state persisted in localStorage, Navbar toggle with volume/mute SVG icons
+- Phase 6: Emoji reactions broadcast via server `sendReaction`/`roomReaction` events; floating Framer Motion animation overlay
+- Phase 6: Page transitions via `template.tsx` with fade + slide-up animation
 
 ### Pending Todos
 
@@ -83,7 +89,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-07-05
-Stopped at: Phase 5 fully executed — disconnect timer, reconnect state restore, spectator mode, rematch UI, all type-checked and built
+Stopped at: Phase 6 fully executed — theme switcher, audio effects, emoji reactions, page transitions, all type-checked and built
 Resume file: None
 
 ## Files Modified (Phase 2)
@@ -125,3 +131,18 @@ Resume file: None
 - `src/components/WinnerModal.tsx` — Rematch vote progress, spectator leave button
 - `src/app/join/page.tsx` — Spectator callback handling (isSpectator + state restore)
 - `src/app/game/[roomId]/page.tsx` — ReconnectBanner integration, spectator card lock
+
+## Files Modified (Phase 6)
+
+- `src/components/ThemeProvider.tsx` — next-themes wrapper with class attribute, system default
+- `src/app/layout.tsx` — Wrap with ThemeProvider, suppressHydrationWarning on html
+- `src/components/Navbar.tsx` — Theme dropdown (Sun/Moon icons), mute toggle (Volume/Mute SVG icons)
+- `src/store/audioStore.ts` — isMuted state persisted to localStorage via Zustand
+- `src/hooks/useSound.ts` — Web Audio API oscillator tones for flip/match/win, reads mute from store
+- `src/hooks/useSoundEffects.ts` — Watches store match count + status for match/win sound triggers
+- `src/store/gameStore.ts` — Added activeReactions array with addReaction/removeReaction
+- `src/hooks/useGameSocket.ts` — roomReaction listener with 3.5s auto-cleanup, emitSendReaction export
+- `server/src/index.ts` — sendReaction handler broadcasting roomReaction to room
+- `src/components/ReactionBar.tsx` — 6 preset emoji buttons (🎉🔥👏😂😮❤️)
+- `src/components/ReactionOverlay.tsx` — Fixed overlay with AnimatePresence floating emoji animations
+- `src/app/template.tsx` — Framer Motion fade + slide-up page transition wrapper
