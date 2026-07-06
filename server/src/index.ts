@@ -4,6 +4,8 @@ import {
   createRoom,
   getRoom,
   addPlayer,
+  addSpectator,
+  removeSpectator,
   removePlayer,
   deleteRoom,
 } from "./roomManager.js";
@@ -18,6 +20,7 @@ import {
 
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
 const MISMATCH_DELAY_MS = 1000;
+const DISCONNECT_GRACE_MS = 30000;
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -28,6 +31,8 @@ const io = new Server(httpServer, {
 });
 
 const roomTimers = new Map<string, ReturnType<typeof setInterval>>();
+const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const disconnectCountdowns = new Map<string, ReturnType<typeof setInterval>>();
 
 function startGameTimer(roomId: string): void {
   const data = getRoom(roomId);
@@ -54,6 +59,88 @@ function stopGameTimer(roomId: string): void {
     clearInterval(interval);
     roomTimers.delete(roomId);
   }
+}
+
+function startDisconnectCountdown(roomId: string, disconnectedPlayerId: string): void {
+  const startTime = Date.now();
+
+  const countdownInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const remaining = Math.max(0, Math.ceil((DISCONNECT_GRACE_MS - elapsed) / 1000));
+    io.to(roomId).emit("disconnectCountdown", { remaining, playerId: disconnectedPlayerId });
+
+    if (remaining <= 0) {
+      clearInterval(countdownInterval);
+      disconnectCountdowns.delete(roomId);
+    }
+  }, 1000);
+
+  disconnectCountdowns.set(roomId, countdownInterval);
+
+  const timeout = setTimeout(() => {
+    const data = getRoom(roomId);
+    if (!data || data.room.status !== "playing") return;
+
+    stopGameTimer(roomId);
+    stopDisconnectTimers(roomId);
+
+    const remainingPlayer = data.room.players.find((p) => p.id !== disconnectedPlayerId);
+    const winner = remainingPlayer && remainingPlayer.isConnected
+      ? { id: remainingPlayer.id, name: remainingPlayer.name }
+      : null;
+
+    data.room.status = "finished";
+    io.to(roomId).emit("gameOver", {
+      winner,
+      players: data.room.players.map((p) => ({
+        id: p.id, name: p.name, score: p.score, moves: p.moves,
+      })),
+      elapsedTime: data.room.elapsedTime ?? 0,
+    });
+  }, DISCONNECT_GRACE_MS);
+
+  disconnectTimers.set(roomId, timeout);
+}
+
+function stopDisconnectTimers(roomId: string): void {
+  const timeout = disconnectTimers.get(roomId);
+  if (timeout) {
+    clearTimeout(timeout);
+    disconnectTimers.delete(roomId);
+  }
+  const countdown = disconnectCountdowns.get(roomId);
+  if (countdown) {
+    clearInterval(countdown);
+    disconnectCountdowns.delete(roomId);
+  }
+}
+
+function getFullGameState(roomId: string) {
+  const data = getRoom(roomId);
+  if (!data) return null;
+  return {
+    board: data.room.board.map((c) => ({
+      id: c.id,
+      icon: c.icon,
+      isFlipped: c.isFlipped,
+      isMatched: c.isMatched,
+    })),
+    players: data.room.players.map((p) => ({
+      id: p.id, name: p.name, score: p.score, moves: p.moves, isConnected: p.isConnected,
+    })),
+    currentTurn: data.room.currentTurn,
+    status: data.room.status,
+    elapsedTime: data.room.elapsedTime ?? 0,
+    flippedCards: data.room.flippedCards,
+  };
+}
+
+function determineWinner(room: import("./roomManager.js").RoomData["room"]): { id: string; name: string } | null {
+  const [p1, p2] = room.players;
+  if (!p2) return null;
+  if (p1.score > p2.score) return { id: p1.id, name: p1.name };
+  if (p2.score > p1.score) return { id: p2.id, name: p2.name };
+  return null;
 }
 
 io.on("connection", (socket) => {
@@ -93,8 +180,21 @@ io.on("connection", (socket) => {
       callback({ error: "Room not found" });
       return;
     }
+
+    // Spectator mode: room is full or game already in progress
     if (data.room.players.length >= 2) {
-      callback({ error: "Room is full" });
+      addSpectator(data.room.id, socket.id);
+      socket.join(data.room.id);
+      socket.data.playerId = null;
+      socket.data.roomId = data.room.id;
+
+      callback({
+        roomId: data.room.id,
+        playerId: null,
+        isSpectator: true,
+        players: data.room.players,
+        state: getFullGameState(data.room.id),
+      });
       return;
     }
 
@@ -135,6 +235,37 @@ io.on("connection", (socket) => {
         status: data.room.status,
       });
     }
+  });
+
+  socket.on("reconnectToGame", ({ roomId: rId, playerId: pId }: { roomId: string; playerId: string }, callback) => {
+    const data = getRoom(rId);
+    if (!data) {
+      callback({ error: "Room not found" });
+      return;
+    }
+
+    const player = data.room.players.find((p) => p.id === pId);
+    if (!player) {
+      callback({ error: "Player not found" });
+      return;
+    }
+
+    player.isConnected = true;
+    socket.join(rId);
+    socket.data.playerId = pId;
+    socket.data.roomId = rId;
+
+    stopDisconnectTimers(rId);
+
+    io.to(rId).emit("opponentReconnected", { playerId: pId });
+
+    const state = getFullGameState(rId);
+    callback({ success: true, state });
+
+    io.to(rId).emit("roomUpdate", {
+      players: data.room.players,
+      status: data.room.status,
+    });
   });
 
   socket.on("flipCard", ({ cardId }: { cardId: number }, callback) => {
@@ -264,12 +395,22 @@ io.on("connection", (socket) => {
   socket.on("leaveRoom", (_data, callback) => {
     const roomId: string | undefined = socket.data.roomId;
     const playerId: string | undefined = socket.data.playerId;
-    if (!roomId || !playerId) {
+    if (!roomId) {
       if (callback) callback({ error: "Not in a room" });
       return;
     }
 
+    // Handle spectator leave
+    if (!playerId) {
+      removeSpectator(roomId, socket.id);
+      socket.leave(roomId);
+      delete socket.data.roomId;
+      if (callback) callback({ success: true });
+      return;
+    }
+
     stopGameTimer(roomId);
+    stopDisconnectTimers(roomId);
     removePlayer(roomId, playerId);
     socket.leave(roomId);
     delete socket.data.roomId;
@@ -282,12 +423,26 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("sendReaction", ({ emoji }: { emoji: string }) => {
+    const roomId: string | undefined = socket.data.roomId;
+    const playerId: string | undefined = socket.data.playerId;
+    if (roomId && playerId) {
+      io.to(roomId).emit("roomReaction", { playerId, emoji });
+    }
+  });
+
   socket.on("disconnect", () => {
     const playerId = socket.data.playerId;
     const roomId = socket.data.roomId;
     console.log(`[server] Client disconnected: ${socket.id} (playerId: ${playerId})`);
 
-    if (roomId && playerId) {
+    if (roomId) {
+      // Remove spectator
+      if (!playerId) {
+        removeSpectator(roomId, socket.id);
+        return;
+      }
+
       const data = getRoom(roomId);
       if (data) {
         const player = data.room.players.find((p) => p.id === playerId);
@@ -301,6 +456,11 @@ io.on("connection", (socket) => {
           status: data.room.status,
         });
 
+        if (data.room.status === "playing") {
+          io.to(roomId).emit("opponentDisconnected", { playerId });
+          startDisconnectCountdown(roomId, playerId);
+        }
+
         if (data.room.players.every((p) => !p.isConnected)) {
           stopGameTimer(roomId);
         }
@@ -308,14 +468,6 @@ io.on("connection", (socket) => {
     }
   });
 });
-
-function determineWinner(room: import("./roomManager.js").RoomData["room"]): { id: string; name: string } | null {
-  const [p1, p2] = room.players;
-  if (!p2) return null;
-  if (p1.score > p2.score) return { id: p1.id, name: p1.name };
-  if (p2.score > p1.score) return { id: p2.id, name: p2.name };
-  return null;
-}
 
 httpServer
   .listen(PORT, () => {

@@ -71,9 +71,9 @@ Plans:
   5. When game ends, a Winner Modal appears with final scores and a confetti burst.
 
 Plans:
-- [ ] 03-01: Build GameBoard, Card components with Framer Motion 3D flip animations and matched-card styling
-- [ ] 03-02: Wire Socket.IO event handlers for real-time sync (flips, scores, turns, game-end); add Scoreboard and loading skeletons
-- [ ] 03-03: Build Winner Modal with confetti, final scores, and action buttons
+- [x] 03-01: Build GameBoard, Card components with Framer Motion 3D flip animations and matched-card styling
+- [x] 03-02: Wire Socket.IO event handlers for real-time sync (flips, scores, turns, game-end); add Scoreboard and loading skeletons
+- [x] 03-03: Build Winner Modal with confetti, final scores, and action buttons
 
 ---
 
@@ -91,9 +91,9 @@ Plans:
   5. A "Leave Room" dialog appears before navigating away from an active game or waiting room.
 
 Plans:
-- [ ] 04-01: Build Landing page with Navbar, hero section, and Create/Join CTAs
-- [ ] 04-02: Build Create Room page and Join Room page with form validation and routing
-- [ ] 04-03: Build Waiting Room component, room code copy/share, and Leave Room dialog
+- [x] 04-01: Build Landing page with Navbar, hero section, and Create/Join CTAs
+- [x] 04-02: Build Create Room page and Join Room page with form validation and routing
+- [x] 04-03: Build Waiting Room component, room code copy/share, and Leave Room dialog
 
 ---
 
@@ -110,9 +110,9 @@ Plans:
   5. Rematch request/accept flow works — both players must confirm before a new game resets the board.
 
 Plans:
-- [ ] 05-01: Implement disconnect detection, 30-second countdown, auto-win, and reconnect-with-state-restore on server
-- [ ] 05-02: Build Reconnect Banner component and spectator mode UI (read-only board view)
-- [ ] 05-03: Implement rematch request/accept flow on server and client
+- [x] 05-01: Implement disconnect detection, 30-second countdown, auto-win, and reconnect-with-state-restore on server
+- [x] 05-02: Build Reconnect Banner component and spectator mode UI (read-only board view)
+- [x] 05-03: Implement rematch request/accept flow on server and client
 
 ---
 
@@ -162,8 +162,8 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-07-05 |
 | 2. Game Engine | 3/3 | Complete | 2026-07-05 |
-| 3. Game UI & Sync | 0/3 | Not started | - |
-| 4. Lobby Flow | 0/3 | Not started | - |
-| 5. Edge Cases | 0/3 | Not started | - |
+| 3. Game UI & Sync | 3/3 | Complete | 2026-07-05 |
+| 4. Lobby Flow | 3/3 | Complete | 2026-07-05 |
+| 5. Edge Cases | 3/3 | Complete | 2026-07-05 |
 | 6. Polish | 0/4 | Not started | - |
 | 7. Deployment & Docs | 0/3 | Not started | - |

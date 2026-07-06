@@ -61,6 +61,21 @@ function addPlayer(code: string, _socketId: string, name: string, playerId: stri
   return player;
 }
 
+function addSpectator(code: string, socketId: string): boolean {
+  const data = rooms.get(code.toUpperCase());
+  if (!data) return false;
+  if (data.room.spectators.includes(socketId)) return false;
+  data.room.spectators.push(socketId);
+  return true;
+}
+
+function removeSpectator(code: string, socketId: string): boolean {
+  const data = rooms.get(code.toUpperCase());
+  if (!data) return false;
+  data.room.spectators = data.room.spectators.filter((s) => s !== socketId);
+  return true;
+}
+
 function removePlayer(code: string, playerId: string): boolean {
   const data = rooms.get(code.toUpperCase());
   if (!data) return false;
@@ -83,6 +98,8 @@ export {
   createRoom,
   getRoom,
   addPlayer,
+  addSpectator,
+  removeSpectator,
   removePlayer,
   deleteRoom,
   getRoomCount,
